@@ -1,5 +1,3 @@
-# method.py
-
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -18,10 +16,22 @@ def rearrange_array_rgb(array: np.ndarray) -> np.ndarray:
     reshaped = np.reshape(array, (256, 256, 3))
     return np.transpose(reshaped, (1, 2, 0))
 
-def rearrange_array_01(array: np.ndarray) -> np.ndarray:
-    """Rearranges a given array to the shape (256, 256, 1)."""
+def rearrange_array_single_channel(array: np.ndarray) -> np.ndarray:
+    """Rearranges a given single-channel array to the shape (256, 256, 1)."""
     reshaped = np.reshape(array, (256, 256, 1))
     return np.transpose(reshaped, (1, 2, 0))
+
+def rearrange_array_rgb_swap(array: np.ndarray) -> np.ndarray:
+    """Rearranges an RGB array by swapping axes to (256, 256, 3)."""
+    return np.swapaxes(array, 0, -1)
+
+def rearrange_array_single_channel_swap(array: np.ndarray) -> np.ndarray:
+    """Rearranges a single-channel array by swapping axes to (256, 256, 1)."""
+    return np.swapaxes(array, 0, -1)
+
+def rearrange_array_inverted(array: np.ndarray) -> np.ndarray:
+    """Inverts the axes of an array, useful for preprocessing back to original."""
+    return np.swapaxes(array, -1, 0)
 
 def preprocess_image(image_path: str) -> tf.Tensor:
     """Preprocesses an image for training by reading and normalizing it."""
@@ -32,10 +42,10 @@ def preprocess_image(image_path: str) -> tf.Tensor:
 def preprocess_mask(mask_path: str) -> tf.Tensor:
     """Preprocesses a mask for training."""
     with rasterio.open(mask_path) as mask_file:
-        mask_data = rearrange_array_01(mask_file.read())
+        mask_data = rearrange_array_single_channel(mask_file.read())
     return tf.convert_to_tensor(mask_data, dtype=tf.int8)
 
-def preprocessing(carte_paths: List[str], mask_paths: List[str]) -> Tuple[List[tf.Tensor], List[tf.Tensor]]:
+def preprocessing_images_and_masks(carte_paths: List[str], mask_paths: List[str]) -> Tuple[List[tf.Tensor], List[tf.Tensor]]:
     """Preprocesses all images and masks into tensors."""
     images = []
     masks = []
@@ -52,9 +62,9 @@ def preprocessing(carte_paths: List[str], mask_paths: List[str]) -> Tuple[List[t
 
     return images, masks
 
-def create_dataset(paths: List[str], mask_paths: List[str], train: bool = False) -> tf.data.Dataset:
+def create_dataset_from_paths(image_paths: List[str], mask_paths: List[str], train: bool = False) -> tf.data.Dataset:
     """Creates a TensorFlow dataset from image and mask paths."""
-    images, masks = preprocessing(paths, mask_paths)
+    images, masks = preprocessing_images_and_masks(image_paths, mask_paths)
     dataset = tf.data.Dataset.from_tensor_slices((images, masks))
 
     if train:
