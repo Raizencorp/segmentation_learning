@@ -1,3 +1,6 @@
+# Internship Context and Objective
+The internship focuses on satellite image processing using artificial intelligence, with the main objective of achieving automatic contour detection to produce very high-resolution land-cover maps. This work falls within the field of image segmentation, aiming to identify and extract different objects such as buildings, fields, forests, and roads. It contributes to an innovation effort aimed at improving automation in satellite image interpretation that can reduce manual processing time and enhance mapping accuracy in land-cover production.
+
 # Overview
 
 This project implements an image segmentation pipeline using a U-Net model with TensorFlow. It includes the preprocessing of images and masks, data augmentation, training the model, and making predictions. The model is designed to perform semantic segmentation, which is ideal for tasks like satellite image analysis, medical image segmentation, and other applications where pixel-wise classification is required.
@@ -24,3 +27,8 @@ The input: 	![input](exemple_data/input.PNG)
 The mask: 	![mask](exemple_data/mask.PNG)
 
 The result: ![restult](exemple_data/result.PNG)
+
+
+MIT License
+
+Copyright (c) 2025 Your Name
